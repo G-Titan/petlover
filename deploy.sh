@@ -12,19 +12,18 @@ flutter pub get
 echo "🏗️ Building Flutter Web app for production..."
 flutter build web --release --base-href "/petlover/"
 
-# Save the parent repository remote URL
-REMOTE_URL=$(git remote get-url origin)
+echo "📂 Copying compiled website to docs/ folder for single-branch deployment..."
+# Remove any old docs folder
+rm -rf docs
 
-echo "📂 Navigating to build output..."
-cd build/web
+# Copy everything from the compile output to docs
+cp -r build/web docs
 
-echo "🚀 Initializing temporary Git repo for deployment..."
-git init
-git checkout -b main
-git add .
-git commit -m "Deploy production assets to gh-pages"
+# Add .nojekyll file so GitHub Pages doesn't block Flutter framework files
+touch docs/.nojekyll
 
-echo "📤 Force pushing compiled assets to origin/gh-pages..."
-git push --force "$REMOTE_URL" main:gh-pages
-
-echo "✅ Deployment push completed successfully!"
+echo "✅ Web build copied to 'docs/'!"
+echo "👉 To deploy, just run these standard git commands in your terminal:"
+echo "   git add docs/"
+echo "   git commit -m \"Update live website files\""
+echo "   git push origin main"
